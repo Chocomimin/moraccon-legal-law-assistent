@@ -1,0 +1,10 @@
+/* index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  /* This is a guess for the light bluish-white background */
+  background-color: #f7faff;
+  font-family: Arial, sans-serif; /* Use a clean, modern font */
+}
