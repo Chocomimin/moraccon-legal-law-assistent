@@ -24,7 +24,7 @@ domain_names = list(LAW_DOMAINS.keys())
 domain_texts = [LAW_DOMAINS[d]["description"] for d in domain_names]
 domain_embeddings = domain_model.encode(domain_texts, convert_to_tensor=True)
 
-def detect_legal_domain(question, threshold=0.4):
+def detect_legal_domain(question, threshold=0.25):
     q_emb = domain_model.encode(question, convert_to_tensor=True)
     scores = util.cos_sim(q_emb, domain_embeddings)[0]
 
@@ -100,7 +100,7 @@ def build_faiss_index():
 
     print("FAISS index built and saved!")
 
-def search_faiss(query, domain, top_k=3, min_score=0.35):
+def search_faiss(query, domain, top_k=3, min_score=0.2):
 
     # Safety check
     if not domain or domain not in LAW_DOMAINS:
@@ -135,9 +135,7 @@ def search_faiss(query, domain, top_k=3, min_score=0.35):
         chunk = chunks[idx]
 
         # 🔒 DOMAIN FILTER (Safe check)
-        domain_files = LAW_DOMAINS.get(domain, {}).get("files", [])
-        if chunk["source"] not in domain_files:
-            continue
+
 
         score = 1 / (1 + dist)
         if score >= min_score:
